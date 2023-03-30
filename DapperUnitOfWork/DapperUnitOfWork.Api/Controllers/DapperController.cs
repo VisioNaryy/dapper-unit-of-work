@@ -1,4 +1,5 @@
 ﻿using DapperUnitOfWork.Data.Context.Interfaces;
+using DapperUnitOfWork.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DapperUnitOfWork.Api.Controllers;
@@ -21,11 +22,9 @@ public class DapperController : ControllerBase
         try
         {
             _personDataContext.Begin();
-        
-            var personRepositoy = _personDataContext.PersonRepository;
 
-            var result1 = await personRepositoy.UpdateAddressByIdAsync(new(1, "11111"));
-            var result2 = await personRepositoy.UpdateAddressByIdAsync(new (2, "22222"));
+            var result1 = await _personDataContext.PersonRepository.UpdateAddressByIdAsync(new(1, "11111"));
+            var result2 = await _personDataContext.PersonRepository.UpdateAddressByIdAsync(new(2, "22222"));
 
             _personDataContext.Commit();
 
