@@ -108,31 +108,6 @@ public abstract class Session : ISession
         }
     }
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (_disposed)
-            return;
-
-        if (disposing)
-        {
-            _transaction?.Dispose();
-            
-            _connection?.Close();
-            _connection?.Dispose();
-        }
-
-        _transaction = null;
-        _connection = null;
-
-        _disposed = true;
-    }
-
     public async ValueTask DisposeAsync()
     {
         await DisposeAsync(true).ConfigureAwait(false);

@@ -2,7 +2,7 @@
 
 namespace DapperUnitOfWork.Data.UnitOfWork;
 
-public interface ISession : IDisposable, IAsyncDisposable
+public interface ISession : IAsyncDisposable
 {
     DbConnection? Connection { get; }
     DbTransaction? Transaction { get; }
