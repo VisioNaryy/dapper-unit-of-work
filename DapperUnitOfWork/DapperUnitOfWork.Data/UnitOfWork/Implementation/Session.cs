@@ -11,51 +11,10 @@ public abstract class Session : ISession
 
     public DbConnection? Connection => _connection;
     public DbTransaction? Transaction => _transaction;
-    
-    public Session(IConnectionFactory connectionFactory)
+
+    protected Session(IConnectionFactory connectionFactory)
     {
         _connection = connectionFactory.OpenConnection();
-    }
-
-    public void BeginTransaction()
-    {
-        _transaction = _connection?.BeginTransaction();
-    }
-
-    public void Commit()
-    {
-        try
-        {
-            _transaction?.Commit();
-        }
-        catch
-        {
-            _transaction?.Rollback();
-            throw;
-        }
-        finally
-        {
-            _transaction?.Dispose();
-            _transaction = null;
-        }
-    }
-
-    public void Rollback()
-    {
-        try
-        {
-            _transaction?.Rollback();
-        }
-        catch
-        {
-            _transaction?.Rollback();
-            throw;
-        }
-        finally
-        {
-            _transaction?.Dispose();
-            _transaction = null;
-        }
     }
 
     public async Task BeginTransactionAsync()
