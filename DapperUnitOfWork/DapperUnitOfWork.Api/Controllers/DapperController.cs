@@ -16,34 +16,36 @@ public class DapperController : ControllerBase
     }
 
     [HttpPost]
-    public async Task Test()
+    public async Task<string> Test()
     {
         try
         {
             var address1 = await _personDbContext.Addresses.GetFirstOrDefaultByIdAsync(1);
             
-            _personDbContext.Begin();
+            await _personDbContext.BeginTransactionAsync();
 
             var result1 = await _personDbContext.Addresses.UpdateAddressByIdAsync(new(1, "11111"));
             var result2 = await _personDbContext.Addresses.UpdateAddressByIdAsync(new(2, "22222"));
 
-            _personDbContext.Commit();
+            await _personDbContext.CommitAsync();
             
             var result3 = await _personDbContext.Addresses.UpdateAddressByIdAsync(new(3, "33333"));
             
-            _personDbContext.Begin();
+            await _personDbContext.BeginTransactionAsync();
             
             var result4 = await _personDbContext.Addresses.UpdateAddressByIdAsync(new(4, "44444"));
             var result5 = await _personDbContext.Addresses.UpdateAddressByIdAsync(new(5, "55555"));
             
-            _personDbContext.Commit();
-            
-            Console.WriteLine();
+            await _personDbContext.CommitAsync();
+
+            return "Ok";
         }
         catch (Exception exception)
         {
             Console.WriteLine(exception.Message);
-            _personDbContext.Rollback();
+            await _personDbContext.RollbackAsync();
+
+            return "Bad";
         }
     }
 }

@@ -1,12 +1,15 @@
-﻿using System.Data;
+﻿using System.Data.Common;
 
 namespace DapperUnitOfWork.Data.UnitOfWork;
 
-public interface ISession : IDisposable
+public interface ISession : IDisposable, IAsyncDisposable
 {
-    IDbConnection? Connection { get; }
-    IDbTransaction? Transaction { get; }
-    void Begin();
+    DbConnection? Connection { get; }
+    DbTransaction? Transaction { get; }
+    void BeginTransaction();
     void Commit();
     void Rollback();
+    Task BeginTransactionAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
 }

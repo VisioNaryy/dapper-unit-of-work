@@ -18,9 +18,9 @@ public sealed class PersonDbContext : IPersonDbContext
     public IAddressRepository Addresses =>
         _addressRepository ??= new AddressRepository(_session);
 
-    public void Begin()
+    public void BeginTransaction()
     {
-        _session.Begin();
+        _session.BeginTransaction();
     }
 
     public void Commit()
@@ -31,5 +31,20 @@ public sealed class PersonDbContext : IPersonDbContext
     public void Rollback()
     {
         _session.Rollback();
+    }
+    
+    public async Task BeginTransactionAsync()
+    {
+        await _session.BeginTransactionAsync();
+    }
+    
+    public async Task CommitAsync()
+    {
+        await _session.CommitAsync();
+    }
+
+    public async Task RollbackAsync()
+    {
+        await _session.RollbackAsync();
     }
 }

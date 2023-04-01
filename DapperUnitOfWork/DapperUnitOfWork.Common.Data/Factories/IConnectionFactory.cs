@@ -1,8 +1,8 @@
-﻿using System.Data;
+﻿using System.Data.Common;
 
 namespace DapperUnitOfWork.Common.Data.Factories;
 
 public interface IConnectionFactory
 {
-    IDbConnection? OpenConnection();
+    DbConnection? OpenConnection();
 }

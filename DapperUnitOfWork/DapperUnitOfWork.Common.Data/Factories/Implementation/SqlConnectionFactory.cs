@@ -1,4 +1,4 @@
-﻿using System.Data;
+﻿using System.Data.Common;
 using System.Data.SqlClient;
 using DapperUnitOfWork.Common.Data.Factories.Interfaces;
 using DapperUnitOfWork.Common.Data.IOptions;
@@ -15,7 +15,7 @@ public class SqlConnectionFactory : ISqlConnectionFactory
         _connectionString = options.CurrentValue.DefaultConnection;
     }
 
-    public IDbConnection? OpenConnection()
+    public DbConnection OpenConnection()
     {
         var connection = new SqlConnection(_connectionString);
         connection.Open();
