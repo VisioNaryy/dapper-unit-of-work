@@ -3,8 +3,7 @@ using DapperUnitOfWork.Data.Models.Request;
 
 namespace DapperUnitOfWork.Data.Repositories.Interfaces;
 
-public interface IPersonRepository
+public interface IAddressRepository : IRepository<Address>
 {
-    Task<Address?> GetAddressByIdAsync(int addressId);
     Task<int> UpdateAddressByIdAsync(UpdateAddressByIdRequest request);
 }

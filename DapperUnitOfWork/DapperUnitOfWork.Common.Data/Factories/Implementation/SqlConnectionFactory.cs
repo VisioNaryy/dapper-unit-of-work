@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace DapperUnitOfWork.Common.Data.Factories.Implementation;
 
-public class SqlConnectionFactory : IConnectionFactory
+public class SqlConnectionFactory : ISqlConnectionFactory
 {
     private readonly string _connectionString;
     
