@@ -2,5 +2,4 @@
 
 public interface IPersonDbContextSession : ISession
 {
-    
 }

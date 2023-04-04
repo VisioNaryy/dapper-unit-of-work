@@ -14,7 +14,7 @@ public sealed class PersonDbContext : IPersonDbContext
     {
         _session = session;
     }
-    
+
     public IAddressRepository Addresses =>
         _addressRepository ??= new AddressRepository(_session);
 
@@ -22,7 +22,7 @@ public sealed class PersonDbContext : IPersonDbContext
     {
         await _session.BeginTransactionAsync();
     }
-    
+
     public async Task CommitAsync()
     {
         await _session.CommitAsync();

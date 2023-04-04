@@ -30,7 +30,7 @@ public class AddressRepository : IAddressRepository
             {
                 id
             },
-            transaction: _session.Transaction);
+            _session.Transaction);
 
         return result;
     }
@@ -47,7 +47,7 @@ public class AddressRepository : IAddressRepository
         SET PostalCode = @postalCode
         WHERE AddressID = @addressId
         """;
-        
+
         var result = await _session.Connection.ExecuteScalarAsync<int>(
             sql,
             new
@@ -55,7 +55,7 @@ public class AddressRepository : IAddressRepository
                 postalCode,
                 addressId
             },
-            transaction: _session.Transaction);
+            _session.Transaction);
 
         return result;
     }

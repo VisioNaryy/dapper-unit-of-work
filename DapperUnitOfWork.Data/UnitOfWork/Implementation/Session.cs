@@ -7,61 +7,60 @@ namespace DapperUnitOfWork.Data.UnitOfWork.Implementation;
 public abstract class Session : ISession
 {
     private bool _disposed;
-    private DbTransaction? _transaction;
-    private DbConnection? _connection;
-
-    public DbConnection? Connection => _connection;
-    public DbTransaction? Transaction => _transaction;
 
     protected Session(IConnectionFactory connectionFactory)
     {
-        _connection = connectionFactory.OpenConnection();
+        Connection = connectionFactory.OpenConnection();
     }
+
+    public DbConnection? Connection { get; private set; }
+
+    public DbTransaction? Transaction { get; private set; }
 
     public async Task BeginTransactionAsync()
     {
-        if (_connection is not null)
-            _transaction = await _connection.BeginTransactionAsync();
+        if (Connection is not null)
+            Transaction = await Connection.BeginTransactionAsync();
     }
 
     public async Task CommitAsync()
     {
-        if (_transaction is null)
+        if (Transaction is null)
             return;
 
         try
         {
-            await _transaction.CommitAsync();
+            await Transaction.CommitAsync();
         }
         catch
         {
-            await _transaction.RollbackAsync();
+            await Transaction.RollbackAsync();
             throw;
         }
         finally
         {
-            await _transaction.DisposeAsync();
+            await Transaction.DisposeAsync();
 
-            _transaction = null;
+            Transaction = null;
         }
     }
 
     public async Task RollbackAsync()
     {
-        if (_transaction is null)
+        if (Transaction is null)
             return;
 
-        await _transaction.RollbackAsync();
+        await Transaction.RollbackAsync();
 
-        await _transaction.DisposeAsync();
+        await Transaction.DisposeAsync();
 
-        _transaction = null;
+        Transaction = null;
     }
 
     public async ValueTask DisposeAsync()
     {
         await DisposeAsync(true).ConfigureAwait(false);
-        
+
         GC.SuppressFinalize(this);
     }
 
@@ -72,21 +71,21 @@ public abstract class Session : ISession
 
         if (disposing)
         {
-            if (_transaction is not null)
-                await _transaction.DisposeAsync();
-            
+            if (Transaction is not null)
+                await Transaction.DisposeAsync();
 
-            if (_connection is not null)
+
+            if (Connection is not null)
             {
-                if (_connection.State is ConnectionState.Open)
-                    await _connection.CloseAsync();
-                
-                await _connection.DisposeAsync();
+                if (Connection.State is ConnectionState.Open)
+                    await Connection.CloseAsync();
+
+                await Connection.DisposeAsync();
             }
         }
 
-        _transaction = null;
-        _connection = null;
+        Transaction = null;
+        Connection = null;
 
         _disposed = true;
     }

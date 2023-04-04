@@ -9,7 +9,7 @@ namespace DapperUnitOfWork.Common.Data.Factories.Implementation;
 public class SqlConnectionFactory : ISqlConnectionFactory
 {
     private readonly string _connectionString;
-    
+
     public SqlConnectionFactory(IOptionsMonitor<SqlServerOptions> options)
     {
         _connectionString = options.CurrentValue.DefaultConnection;
