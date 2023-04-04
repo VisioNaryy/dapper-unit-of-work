@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using DapperUnitOfWork.Common.Data.Factories;
 
 namespace DapperUnitOfWork.Data.UnitOfWork.Implementation;
@@ -27,7 +28,7 @@ public abstract class Session : ISession
     {
         if (_transaction is null)
             return;
-        
+
         try
         {
             await _transaction.CommitAsync();
@@ -49,22 +50,12 @@ public abstract class Session : ISession
     {
         if (_transaction is null)
             return;
-        
-        try
-        {
-            await _transaction.RollbackAsync();
-        }
-        catch
-        {
-            await _transaction.RollbackAsync();
-            throw;
-        }
-        finally
-        {
-            await _transaction.DisposeAsync();
 
-            _transaction = null;
-        }
+        await _transaction.RollbackAsync();
+
+        await _transaction.DisposeAsync();
+
+        _transaction = null;
     }
 
     public async ValueTask DisposeAsync()
@@ -82,13 +73,14 @@ public abstract class Session : ISession
         if (disposing)
         {
             if (_transaction is not null)
-            {
                 await _transaction.DisposeAsync();
-            }
+            
 
             if (_connection is not null)
             {
-                await _connection.CloseAsync();
+                if (_connection.State is ConnectionState.Open)
+                    await _connection.CloseAsync();
+                
                 await _connection.DisposeAsync();
             }
         }
