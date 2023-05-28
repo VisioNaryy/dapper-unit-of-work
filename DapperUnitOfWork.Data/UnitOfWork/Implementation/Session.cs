@@ -55,7 +55,6 @@ public abstract class Session : ISession
         try
         {
             await Transaction.CommitAsync();
-            throw new Exception();
         }
         catch
         {
