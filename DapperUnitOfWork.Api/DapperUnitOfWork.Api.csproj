@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DapperUnitOfWork.Common.Data\DapperUnitOfWork.Common.Data.csproj"/>
-        <ProjectReference Include="..\DapperUnitOfWork.Data\DapperUnitOfWork.Data.csproj"/>
+        <ProjectReference Include="..\DapperUnitOfWork.Common.Data\DapperUnitOfWork.Common.Data.csproj" />
+        <ProjectReference Include="..\DapperUnitOfWork.Data\DapperUnitOfWork.Data.csproj" />
     </ItemGroup>
 
 </Project>

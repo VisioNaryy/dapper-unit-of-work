@@ -6,21 +6,45 @@ namespace DapperUnitOfWork.Data.UnitOfWork.Implementation;
 
 public abstract class Session : ISession
 {
+    private readonly IConnectionFactory _connectionFactory;
     private bool _disposed;
 
     protected Session(IConnectionFactory connectionFactory)
     {
-        Connection = connectionFactory.OpenConnection();
+        _connectionFactory = connectionFactory;
     }
 
-    public DbConnection? Connection { get; private set; }
+    public DbConnection? Connection { get; set; }
 
     public DbTransaction? Transaction { get; private set; }
 
-    public async Task BeginTransactionAsync()
+    public async Task OpenConnectionAsync()
     {
         if (Connection is not null)
-            Transaction = await Connection.BeginTransactionAsync();
+            return;
+
+        Connection = await _connectionFactory.OpenConnectionAsync();
+    }
+    
+    public async Task CloseConnectionAsync()
+    {
+        if (Connection is null)
+            return;
+
+        if (Connection.State is ConnectionState.Open)
+            await Connection.CloseAsync();
+
+        await Connection.DisposeAsync();
+
+        Connection = null;
+    }
+    
+    public async Task BeginTransactionAsync()
+    {
+        if (Connection is null || Transaction is not null)
+            return;
+
+        Transaction = await Connection.BeginTransactionAsync();
     }
 
     public async Task CommitAsync()
@@ -31,6 +55,7 @@ public abstract class Session : ISession
         try
         {
             await Transaction.CommitAsync();
+            throw new Exception();
         }
         catch
         {

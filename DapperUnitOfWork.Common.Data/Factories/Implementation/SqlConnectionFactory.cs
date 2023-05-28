@@ -21,4 +21,11 @@ public class SqlConnectionFactory : ISqlConnectionFactory
         connection.Open();
         return connection;
     }
+    
+    public async Task<DbConnection> OpenConnectionAsync()
+    {
+        var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+        return connection;
+    }
 }

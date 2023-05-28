@@ -18,6 +18,9 @@ public class AddressRepository : IAddressRepository
 
     public async Task<Address?> GetFirstOrDefaultByIdAsync(int id)
     {
+        if (_session.Transaction is null)
+            await _session.OpenConnectionAsync();
+        
         var sql = """
         SELECT TOP 1 *
         FROM Person.Address
@@ -32,6 +35,9 @@ public class AddressRepository : IAddressRepository
             },
             _session.Transaction);
 
+        if (_session.Transaction is null)
+            await _session.CloseConnectionAsync();
+
         return result;
     }
 
@@ -39,9 +45,12 @@ public class AddressRepository : IAddressRepository
     {
         var (addressId, postalCode) = request;
 
-        // if (addressId is 2)
-        //     throw new Exception();
-
+        if (addressId is 2)
+            throw new Exception();
+        
+        if (_session.Transaction is null)
+            await _session.OpenConnectionAsync();
+        
         var sql = """
         UPDATE Person.Address
         SET PostalCode = @postalCode
@@ -56,6 +65,9 @@ public class AddressRepository : IAddressRepository
                 addressId
             },
             _session.Transaction);
+        
+        if (_session.Transaction is null)
+            await _session.CloseConnectionAsync();
 
         return result;
     }

@@ -23,14 +23,23 @@ public class DapperController : ControllerBase
         {
             var address1 = await _personDbContext.Addresses.GetFirstOrDefaultByIdAsync(1);
 
+            try
+            {
+                await _personDbContext.BeginTransactionAsync();
+                
+                var result1 =
+                    await _personDbContext.Addresses.UpdateAddressByIdAsync(new UpdateAddressByIdRequest(1, "11111"));
+                // var result2 =
+                //     await _personDbContext.Addresses.UpdateAddressByIdAsync(new UpdateAddressByIdRequest(2, "22222"));
+
+                await _personDbContext.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _personDbContext.RollbackAsync();
+            }
+            
             await _personDbContext.BeginTransactionAsync();
-
-            var result1 =
-                await _personDbContext.Addresses.UpdateAddressByIdAsync(new UpdateAddressByIdRequest(1, "11111"));
-            var result2 =
-                await _personDbContext.Addresses.UpdateAddressByIdAsync(new UpdateAddressByIdRequest(2, "22222"));
-
-            await _personDbContext.CommitAsync();
 
             var result3 =
                 await _personDbContext.Addresses.UpdateAddressByIdAsync(new UpdateAddressByIdRequest(3, "33333"));
@@ -43,6 +52,14 @@ public class DapperController : ControllerBase
                 await _personDbContext.Addresses.UpdateAddressByIdAsync(new UpdateAddressByIdRequest(5, "55555"));
 
             await _personDbContext.CommitAsync();
+
+            await _personDbContext.BeginTransactionAsync();
+            
+            var address11 = await _personDbContext.Addresses.GetFirstOrDefaultByIdAsync(11);
+
+            await _personDbContext.CommitAsync();
+            
+            var address12 = await _personDbContext.Addresses.GetFirstOrDefaultByIdAsync(12);
 
             return "Ok";
         }

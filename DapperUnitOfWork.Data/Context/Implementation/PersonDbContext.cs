@@ -20,16 +20,19 @@ public sealed class PersonDbContext : IPersonDbContext
 
     public async Task BeginTransactionAsync()
     {
+        await _session.OpenConnectionAsync();
         await _session.BeginTransactionAsync();
     }
 
     public async Task CommitAsync()
     {
         await _session.CommitAsync();
+        await _session.CloseConnectionAsync();
     }
 
     public async Task RollbackAsync()
     {
         await _session.RollbackAsync();
+        await _session.CloseConnectionAsync();
     }
 }
